@@ -1,0 +1,24 @@
+{
+  "name": "stoclog",
+  "version": "0.1.0",
+  "description": "Developer tool allowing for sending server console.logs to the client for easier reading",
+  "main": "stoclog.js",
+  "keywords": [
+    "development",
+    "developer",
+    "tool",
+    "server",
+    "client",
+    "console",
+    "logging",
+    "debugging"
+  ],
+  "dependencies": {
+    "stoclog-middleware": "0.1.0"
+  },
+  "author": "Igor Morozov",
+  "license": "MIT",
+  "repository": "https://github.com/ismorozs/stoclog.git",
+  "bugs": "https://github.com/ismorozs/stoclog/issues",
+  "homepage": "https://github.com/ismorozs/stoclog"
+}
