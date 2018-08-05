@@ -11,6 +11,7 @@ Call global ```Stoclog()``` function in the browser console and get server logs.
 ```Stoclog()``` called without arguments will return last server ```console.log```.  
 To offload multiple logs, call ```Stoclog({ get: numberToFetch })```, where ```numberToFetch``` is a number of logs that you want to output to your browser console.
 To remove all stored ```console.logs``` on the server-side, call ```Stoclog({ remove: true })```.  
+
 ---
 
 If you don't like having ```Stoclog``` global function on your ```window``` object, rename it to the name you like with ```Stoclog.renameTo(newName)```.
@@ -33,7 +34,7 @@ or
 ```js
 require('stoclog');
 ```
-if you use bundler or include script onto the html page through ```script``` tag.
+if you use bundler or include script onto the html page through ```script``` tag.  
 This is all you need to do to set up the client part.
 
 ### Setting up the server
@@ -61,7 +62,7 @@ const hapiServer = Hapi.server(...);
 require('stoclog-middleware')(hapiServer.listener);
 ```
 If you use some other framework, just find where it holds ```http.Server``` instance and get it.  
-That is all that is required to set up the server part.
+And that is all that is required to set up the server part.
 
 The second argument to ```stoclog-middleware()``` is an optional options object, that may help customize some of the middleware behavior.
 Option keys are:
