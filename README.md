@@ -17,15 +17,15 @@ Possible advantages over the native solution:
 
 
 # How to use
-### On the client
+## On the client
 Logs are fetched on the call of ```Stoclog``` and its sub-specificators.
-##### Stoclog ()
+#### Stoclog ()
 Returns predefined (```5```) number of last server logs.
-##### Stoclog (Number n)
+#### Stoclog (Number n)
 Returns ```n``` last logs.
-##### Stoclog.remove()
+#### Stoclog.remove()
 Removes all stored logs on the server.
-##### Stoclog.get(String variableName)
+#### Stoclog.get(String variableName)
 Returns ```console.saveState()```ed variable from the server, and saves it in ```Stoclog.$``` object, for playing and fiddling if needed.
 ```js
 // server-side
@@ -33,7 +33,7 @@ console.saveState('myAwesomeState', { x: 1 });
 
 // client-size
 Stoclog.get('myAwesomeState');
-Stocklog.$.myAwesomeState
+Stoclog.$.myAwesomeState
 => { x: 1 }
 ```
 
@@ -61,7 +61,7 @@ To redefine the default number for fetching logs call ```Stoclog.defaultFetchNum
 
 If you don't like having ```Stoclog``` global function on your ```window``` object, rename it to the name you like with ```Stoclog.renameTo(newName)```.
 
-### On the server
+## On the server
 Just use the family of ```console``` methods, or if you defined your own log types, call them on the ```console``` object as well.
 ```js
 console.myTypeOfLog('Foo Bar');
@@ -76,7 +76,7 @@ First of all, load package
 npm install stoclog
 ```
 which will also load additional package ```stoclog-middleware``` for setting up server-side.  
-### Setting up client
+## Setting up client
 
 ```js
 import 'stoclog';
@@ -90,7 +90,7 @@ require('stoclog');
 if you use bundler or include script onto the html page through ```script``` tag.
 This is all you need to do to set up the client part.
 
-### Setting up server
+## Setting up server
 ```stoclog-middleware``` is for server-side, it's a function. And it must be called to set up server-side connection.  
 ```stoclog-middleware``` requires at least one argument, which should be a ```http.Server``` instance for the middleware to attach to.  
 ```js
