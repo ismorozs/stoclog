@@ -6,15 +6,68 @@ Because there are times when you want to figure out what is the value or state t
 And that's where ```Stoclog``` runs to help.  
 ```Stoclog``` stands for **s**erver **to** **c**lient **log**
 
+---
+
+Possible advantages over the native solution:
+* Loads logs of the desired type on demand onto the console in the browser tab, meaning you don't need to watch and rummage in a waterfall of logs in a detached console
+* Types of logs can be user-defined
+* Works in any browser (of popular ones at least)
+* Easily allows to set up as many client-server connections as many running servers and open tabs you have
+* Allows to name server-side variables and check their state in the browser console by referencing them by name
+
+
 # How to use
-Call global ```Stoclog()``` function in the browser console and get server logs.
-```Stoclog()``` called without arguments will return last server ```console.log```.  
-To offload multiple logs, call ```Stoclog({ get: numberToFetch })```, where ```numberToFetch``` is a number of logs that you want to output to your browser console.
-To remove all stored ```console.logs``` on the server-side, call ```Stoclog({ remove: true })```.  
+### On the client
+Logs are fetched on the call of ```Stoclog``` and its sub-specificators.
+##### Stoclog ()
+Returns predefined (```5```) number of last server logs.
+##### Stoclog (Number n)
+Returns ```n``` last logs.
+##### Stoclog.remove()
+Removes all stored logs on the server.
+##### Stoclog.get(String variableName)
+Returns ```console.saveState()```ed variable from the server, and saves it in ```Stoclog.$``` object, for playing and fiddling if needed.
+```js
+// server-side
+console.saveState('myAwesomeState', { x: 1 });
+
+// client-size
+Stoclog.get('myAwesomeState');
+Stocklog.$.myAwesomeState
+=> { x: 1 }
+```
+
+To get particular type of logs, call ```Stoclog[type]()```.
+```js
+Stoclog.warn()
+=> last 5 warning logs
+```
+Particular number of logs of particular type:
+```js
+Stoclog.error(2)
+=> last 2 error logs
+```
+Remove particular type of logs
+```js
+Stoclog.info.remove();
+// all logs of 'info' category are removed now
+```
+
+If you defined custom logs on the server, you call ```Stoclog[customLogName]``` to get them.
+
+To redefine the default number for fetching logs call ```Stoclog.defaultFetchNumber(num)```, with ```num``` to be the number of logs to load when the number isn't specified.
 
 ---
 
 If you don't like having ```Stoclog``` global function on your ```window``` object, rename it to the name you like with ```Stoclog.renameTo(newName)```.
+
+### On the server
+Just use the family of ```console``` methods, or if you defined your own log types, call them on the ```console``` object as well.
+```js
+console.myTypeOfLog('Foo Bar');
+```
+
+To save the value of some variable for the client to pick it up later, call ```console.saveState(uniqueId, value)``` (example is described a little above)
 
 
 # How to install
@@ -34,13 +87,12 @@ or
 ```js
 require('stoclog');
 ```
-if you use bundler or include script onto the html page through ```script``` tag.  
+if you use bundler or include script onto the html page through ```script``` tag.
 This is all you need to do to set up the client part.
 
-### Setting up the server
-```stoclog-middleware``` is for server-side, and it's a function. And it must be called to set up server-side connection.  
+### Setting up server
+```stoclog-middleware``` is for server-side, it's a function. And it must be called to set up server-side connection.  
 ```stoclog-middleware``` requires at least one argument, which should be a ```http.Server``` instance for the middleware to attach to.  
-Like that
 ```js
 const http = require('http');
 const server = http.createServer(...);
@@ -62,21 +114,22 @@ const hapiServer = Hapi.server(...);
 require('stoclog-middleware')(hapiServer.listener);
 ```
 If you use some other framework, just find where it holds ```http.Server``` instance and get it.  
-And that is all that is required to set up the server part.
+That is all that is required to set up the server part.
 
 The second argument to ```stoclog-middleware()``` is an optional options object, that may help customize some of the middleware behavior.
 Option keys are:
-* ```maxLoggerCapacity``` - a number of logs that middleware will contain within itself for fetching. After the number of stored logs exceeds this limit, old logs will get truncated. (default value: ```20```)
-* ```saveLogFuncName``` - name of function to save logs in internal middleware storage. (initially, middleware just hooks up to ```console.log```) The new function will be attached to ```console``` global object, and ```console.log``` itself will remain unmodified. 
+* ```maxLoggerCapacity``` - a number of logs that middleware will contain within itself for fetching. After the number of stored logs exceeds this limit, old logs will get truncated. (default value: ```50```)
+* ```userLogs``` - the array of log types that will be attached to ```console``` and use ```console.log()``` behavior, but you will be able to fetch logs with given particular names. 
 
-Example of using ```saveLogFuncName``` option:
 ```js
-require('stoclog-middleware')(httpServerInstance, { saveLogFuncName: 'toClient' });
-// ....
-console.toClient(dataForClient)
-// function will save dataForClient within middleware storage for fetching, but doesn't output anything
-// in the terminal
-console.log('asdf');
-// => 'asdf'
-// just outputs string, doesn't save anything in the storage
+// server-side
+require('stoclog-middleware')(httpServerInstance, { userLogs: ['db', 'somethingImportant'] });
+console.db('connection established')
+console.somethingImportant('IT HAPPENS!');
+
+// client-side
+Stoclog.db();
+=> 'connection established'
+Stoclog.somethingImportant();
+=> 'IT HAPPENS'
 ```
