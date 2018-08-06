@@ -1,6 +1,6 @@
 {
   "name": "stoclog",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Developer tool allowing for sending server console.logs to the client for easier reading (client part)",
   "main": "stoclog.js",
   "keywords": [
