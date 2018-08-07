@@ -27,7 +27,7 @@
     makeRequest(null, null, 'remove');
   }
 
-  NATIVE_METHODS.forEach((type) => decorate(type));
+  decorate(NATIVE_METHODS);
 
   makeRequest.$ = {};
 
@@ -57,10 +57,7 @@
 
         switch (operation) {
           case 'get':
-            response.forEach((log) => {
-              var method = isNativeMethod(log.method) ? log.method : 'log';
-              console[method].apply(console, log.args)
-            });
+            log(response);
             break;
 
           case 'getstate':
@@ -73,7 +70,7 @@
             break;
 
           case 'connect':
-            response.forEach((type) => decorate(type));
+            decorate(response);
             break;
         }
       }
@@ -82,13 +79,22 @@
     xhr.send();
   }
 
-  function decorate (method) {
-    makeRequest[method] = function (number) {
-      makeRequest(number, method, 'get');
-    }
-    makeRequest[method].remove = function () {
-      makeRequest(null, method, 'remove');
-    }
+  function decorate (methodNames) {
+    methodNames.forEach((methodName) => {
+      makeRequest[methodName] = function (number) {
+        makeRequest(number, methodName, 'get');
+      }
+      makeRequest[methodName].remove = function () {
+        makeRequest(null, methodName, 'remove');
+      }
+    });
+  }
+
+  function log (logs) {
+    logs.forEach((log) => {
+      var method = isNativeMethod(log.method) ? log.method : 'log';
+      console[method].apply(console, log.args)
+    });
   }
 
   function isNativeMethod (method) {
